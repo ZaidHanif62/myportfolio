@@ -1,0 +1,193 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block title %}Home - Portfolio{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero" id="home">
+    <div class="hero-particles"></div>
+    <div class="container">
+        <div class="hero-content" data-aos="fade-up">
+            {% if profile %}
+                <div class="hero-image">
+                    {% if profile.profile_image %}
+                        <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}">
+                    {% else %}
+                        <div class="hero-image-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <h1 class="hero-title">
+                    Hi, I'm <span class="gradient-text">{{ profile.name }}</span>
+                </h1>
+                <h2 class="hero-subtitle typing-text">{{ profile.tagline }}</h2>
+                <p class="hero-description">{{ profile.bio|truncatewords:30 }}</p>
+                
+                <div class="hero-buttons">
+                    <a href="{% url 'projects' %}" class="btn btn-primary">
+                        <span>View My Work</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a href="{% url 'contact' %}" class="btn btn-secondary">
+                        <span>Get In Touch</span>
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+                
+                <div class="hero-social">
+                    {% if profile.github %}<a href="{{ profile.github }}" target="_blank"><i class="fab fa-github"></i></a>{% endif %}
+                    {% if profile.linkedin %}<a href="{{ profile.linkedin }}" target="_blank"><i class="fab fa-linkedin"></i></a>{% endif %}
+                    {% if profile.twitter %}<a href="{{ profile.twitter }}" target="_blank"><i class="fab fa-twitter"></i></a>{% endif %}
+                </div>
+            {% else %}
+                <h1 class="hero-title">Welcome to My Portfolio</h1>
+                <p class="hero-description">Add your profile information in the admin panel</p>
+                <a href="/admin" class="btn btn-primary">Go to Admin</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="scroll-down">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</section>
+
+<!-- Skills Section -->
+{% if skills %}
+<section class="skills-section section-padding">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <h2 class="section-title">My <span class="gradient-text">Skills</span></h2>
+            <p class="section-subtitle">Technologies I work with</p>
+        </div>
+        
+        <div class="skills-grid">
+            {% for skill in skills %}
+    <div class="skill-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+        <div class="skill-icon">
+            <i class="fas fa-code"></i>
+        </div>
+        <h3>{{ skill.name }}</h3>
+        <div class="skill-bar">
+            <div class="skill-progress" data-progress="{{ skill.percentage }}">
+                <span class="skill-percentage">{{ skill.percentage }}%</span>
+            </div>
+        </div>
+        {% if skill.category %}
+            <span class="skill-category">{{ skill.get_category_display }}</span>
+        {% endif %}
+    </div>
+{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Featured Projects Section -->
+{% if projects %}
+<section class="projects-section section-padding bg-dark">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <h2 class="section-title">Featured <span class="gradient-text">Projects</span></h2>
+            <p class="section-subtitle">Some of my recent work</p>
+        </div>
+        
+        <div class="projects-grid">
+            {% for project in projects %}
+                <div class="project-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                    <div class="project-image">
+                        {% if project.image %}
+                            <img src="{{ project.image.url }}" alt="{{ project.title }}">
+                        {% else %}
+                            <div class="project-placeholder">
+                                <i class="fas fa-image"></i>
+                            </div>
+                        {% endif %}
+                        <div class="project-overlay">
+                            <a href="{% url 'project_detail' project.slug %}" class="btn btn-small">View Details</a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>{{ project.title }}</h3>
+                        <p>{{ project.description|truncatewords:15 }}</p>
+                        <div class="project-tags">
+                            {% for tech in project.technologies.split %}
+                                <span class="tag">{{ tech }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="project-links">
+                            {% if project.github_link %}
+                                <a href="{{ project.github_link }}" target="_blank" class="project-link">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            {% endif %}
+                            {% if project.live_link %}
+                                <a href="{{ project.live_link }}" target="_blank" class="project-link">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center" data-aos="fade-up">
+            <a href="{% url 'projects' %}" class="btn btn-primary">View All Projects</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Experience Section -->
+{% if experiences %}
+<section class="experience-section section-padding">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <h2 class="section-title">Work <span class="gradient-text">Experience</span></h2>
+            <p class="section-subtitle">My professional journey</p>
+        </div>
+        
+        <div class="timeline">
+            {% for experience in experiences %}
+                <div class="timeline-item" data-aos="fade-up">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">
+                            {{ experience.start_date|date:"M Y" }} - 
+                            {% if experience.current %}
+                                Present
+                            {% else %}
+                                {{ experience.end_date|date:"M Y" }}
+                            {% endif %}
+                        </div>
+                        <h3>{{ experience.position }}</h3>
+                        <h4>{{ experience.company }}</h4>
+                        <p>{{ experience.description }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content" data-aos="zoom-in">
+            <h2>Let's Work Together</h2>
+            <p>Have a project in mind? Let's create something amazing together!</p>
+            <a href="{% url 'contact' %}" class="btn btn-light">
+                <span>Start a Project</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

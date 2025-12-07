@@ -1,0 +1,127 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block title %}{{ project.title }} - Portfolio{% endblock %}
+
+{% block content %}
+<!-- Project Detail Hero -->
+<section class="project-detail-hero">
+    <div class="container">
+        <div class="project-detail-header" data-aos="fade-up">
+            <a href="{% url 'projects' %}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Projects
+            </a>
+            <h1 class="project-detail-title">{{ project.title }}</h1>
+            <div class="project-detail-meta">
+                <span class="project-date">
+                    <i class="far fa-calendar"></i>
+                    {{ project.created_at|date:"F Y" }}
+                </span>
+                {% if project.featured %}
+                    <span class="project-featured-badge">
+                        <i class="fas fa-star"></i> Featured
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Project Content -->
+<section class="project-detail-content section-padding">
+    <div class="container">
+        <div class="project-detail-grid">
+            <div class="project-main" data-aos="fade-right">
+                <div class="project-image-large">
+                    {% if project.image %}
+                        <img src="{{ project.image.url }}" alt="{{ project.title }}">
+                    {% else %}
+                        <div class="project-placeholder-large">
+                            <i class="fas fa-image"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="project-description">
+                    <h2>About This Project</h2>
+                    <p>{{ project.description }}</p>
+                </div>
+            </div>
+            
+            <div class="project-sidebar" data-aos="fade-left">
+                <div class="project-info-card">
+                    <h3>Project Info</h3>
+                    
+                    <div class="info-section">
+                        <h4>Technologies</h4>
+                        <div class="tech-tags-vertical">
+                            {% for tech in project.technologies.split %}
+                                <span class="tech-tag-large">{{ tech }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="info-section">
+                        <h4>Links</h4>
+                        <div class="project-action-links">
+                            {% if project.github_link %}
+                                <a href="{{ project.github_link }}" target="_blank" class="action-link">
+                                    <i class="fab fa-github"></i>
+                                    <span>View on GitHub</span>
+                                </a>
+                            {% endif %}
+                            {% if project.live_link %}
+                                <a href="{{ project.live_link }}" target="_blank" class="action-link">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    <span>Live Demo</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="info-section">
+                        <a href="{% url 'contact' %}" class="btn btn-primary btn-block">
+                            <i class="fas fa-envelope"></i>
+                            <span>Discuss Similar Project</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Projects -->
+{% if related_projects %}
+<section class="related-projects section-padding bg-dark">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <h2 class="section-title">Related <span class="gradient-text">Projects</span></h2>
+        </div>
+        
+        <div class="projects-grid">
+            {% for related in related_projects %}
+                <div class="project-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                    <div class="project-image">
+                        {% if related.image %}
+                            <img src="{{ related.image.url }}" alt="{{ related.title }}">
+                        {% else %}
+                            <div class="project-placeholder">
+                                <i class="fas fa-image"></i>
+                            </div>
+                        {% endif %}
+                        <div class="project-overlay">
+                            <a href="{% url 'project_detail' related.slug %}" class="btn btn-small">View Details</a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>{{ related.title }}</h3>
+                        <p>{{ related.description|truncatewords:15 }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

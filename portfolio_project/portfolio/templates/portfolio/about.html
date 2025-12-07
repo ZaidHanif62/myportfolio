@@ -1,0 +1,177 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block title %}About - Portfolio{% endblock %}
+
+{% block content %}
+<!-- About Hero -->
+<section class="page-hero">
+    <div class="container">
+        <div class="page-hero-content" data-aos="fade-up">
+            <h1 class="page-title">About <span class="gradient-text">Me</span></h1>
+            <p class="page-subtitle">Learn more about my background and expertise</p>
+        </div>
+    </div>
+</section>
+
+<!-- About Content -->
+{% if profile %}
+<section class="about-content section-padding">
+    <div class="container">
+        <div class="about-grid">
+            <div class="about-image" data-aos="fade-right">
+                {% if profile.profile_image %}
+                    <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}">
+                {% else %}
+                    <div class="about-image-placeholder">
+                        <i class="fas fa-user"></i>
+                    </div>
+                {% endif %}
+                <div class="about-image-decoration"></div>
+            </div>
+            
+            <div class="about-text" data-aos="fade-left">
+                <h2>{{ profile.name }}</h2>
+                <h3 class="gradient-text">{{ profile.tagline }}</h3>
+                <p>{{ profile.bio }}</p>
+                
+                <div class="about-info">
+                    {% if profile.email %}
+                        <div class="info-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>{{ profile.email }}</span>
+                        </div>
+                    {% endif %}
+                    {% if profile.phone %}
+                        <div class="info-item">
+                            <i class="fas fa-phone"></i>
+                            <span>{{ profile.phone }}</span>
+                        </div>
+                    {% endif %}
+                    {% if profile.location %}
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>{{ profile.location }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                {% if profile.resume %}
+                    <a href="{{ profile.resume.url }}" download class="btn btn-primary">
+                        <i class="fas fa-download"></i>
+                        <span>Download Resume</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Skills Section -->
+{% if skills %}
+<section class="skills-detailed section-padding bg-dark">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <h2 class="section-title">Technical <span class="gradient-text">Skills</span></h2>
+        </div>
+        
+        {% regroup skills by category as skills_by_category %}
+        
+        {% for category in skills_by_category %}
+            <div class="skill-category" data-aos="fade-up">
+                <h3>
+                    {% if category.grouper %}
+                        {{ category.grouper|title }}
+                    {% else %}
+                        General Skills
+                    {% endif %}
+                </h3>
+                <div class="skills-list">
+                    {% for skill in category.list %}
+                        <div class="skill-item">
+                            <div class="skill-header">
+                                <span class="skill-name">{{ skill.name }}</span>
+                                <span class="skill-percent">{{ skill.percentage }}%</span>
+                            </div>
+                            <div class="skill-bar-wrapper">
+                                <div class="skill-bar-fill" data-progress="{{ skill.percentage }}"></div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Experience Section -->
+{% if experiences %}
+<section class="experience-detailed section-padding">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <h2 class="section-title">Work <span class="gradient-text">Experience</span></h2>
+        </div>
+        
+        <div class="timeline-detailed">
+            {% for experience in experiences %}
+                <div class="timeline-item-detailed" data-aos="fade-up">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-card">
+                        <div class="timeline-header">
+                            <h3>{{ experience.position }}</h3>
+                            <span class="timeline-date">
+                                {{ experience.start_date|date:"M Y" }} - 
+                                {% if experience.current %}
+                                    <span class="badge-current">Current</span>
+                                {% else %}
+                                    {{ experience.end_date|date:"M Y" }}
+                                {% endif %}
+                            </span>
+                        </div>
+                        <h4>{{ experience.company }}</h4>
+                        <p>{{ experience.description }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Education Section -->
+{% if educations %}
+<section class="education-section section-padding bg-dark">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <h2 class="section-title">Education <span class="gradient-text">Background</span></h2>
+        </div>
+        
+        <div class="education-grid">
+            {% for education in educations %}
+                <div class="education-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                    <div class="education-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>{{ education.degree }}</h3>
+                    <h4>{{ education.field }}</h4>
+                    <p class="education-institution">{{ education.institution }}</p>
+                    <p class="education-date">
+                        {{ education.start_date|date:"Y" }} - 
+                        {% if education.end_date %}
+                            {{ education.end_date|date:"Y" }}
+                        {% else %}
+                            Present
+                        {% endif %}
+                    </p>
+                    {% if education.description %}
+                        <p class="education-description">{{ education.description }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
